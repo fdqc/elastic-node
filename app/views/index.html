@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Autocomplete with ElasticSearch</title>
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
+<body>
+    <h1>Autocomplete Example using ElasticSearch</h1>
+    <div>
+        <label for="locations">Type a Location</label>
+        <input type="text" id="locations">
+    </div>
+    <script>
+        $(function() {
+            /**
+             * Autocomplete function
+             */
+            $('#locations').autocomplete({
+                source: '/locations-autocomplete',
+                minLength: 2,
+                select: function (event, ui) {
+                    $('#locations').val(ui.item._source.loc_name);
+                    return false;
+                }
+            }).autocomplete('instance')._renderItem = function (ul, item) {
+                return $('<li>')
+                    .append('<div>' + item._source.loc_name + '<br>' + item._source.loc_postal_code + '</div>')
+                    .appendTo(ul);
+            };
+        });
+    </script>
+</body>
+</html>
