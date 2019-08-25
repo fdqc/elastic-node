@@ -27,7 +27,7 @@ app.get('/locations', async function(request,response){
 
     // search for all the locations in the index
     const { body } = await client.search({
-        index: 'logstash-2019.08.24-000001',
+        index: 'location-test',
         // type: '_doc', // uncomment this line if you are using Elasticsearch ≤ 6
         body: {
             query: {
@@ -53,7 +53,7 @@ app.get('/locations-autocomplete', async function(request,response){
     // search for location name's that matches
     // the request term
     const { body } = await client.search({
-        index: 'logstash-2019.08.24-000001',
+        index: 'location-test',
         // type: '_doc', // uncomment this line if you are using Elasticsearch ≤ 6
         body: {
             query: {
