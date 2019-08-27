@@ -13,10 +13,18 @@
 <body>
     <h1>Autocomplete Example using ElasticSearch</h1>
     <div>
-        <label for="locations">Type a Location</label>
-        <input type="text" id="locations">
+        <label for="locations">Location</label>
+        <input type="text" id="locations" placeholder="try piedra blanca">
+    </div>
+    <br>
+    <div>
+        <label for="locations">Suggestion</label>
+        <input type="text" id="suggestion" placeholder="try piedra bamca">
     </div>
     <script>
+        $.ajaxSetup({
+            headers: { 'Content-Type': 'application/json' }
+        });
         $(function() {
             /**
              * Autocomplete function
@@ -31,6 +39,23 @@
             }).autocomplete('instance')._renderItem = function (ul, item) {
                 return $('<li>')
                     .append('<div>' + item._source.loc_name + '<br>' + item._source.loc_postal_code + '</div>')
+                    .appendTo(ul);
+            };
+
+             /**
+            * Autocomplete function for
+            * suggestions
+            */
+            $('#suggestion').autocomplete({
+                source: '/location/suggest',
+                minLength: 2,
+                select: function (event, ui) {
+                    $('#suggestion').val(ui.item._source.loc_name);
+                    return false;
+                }
+            }).autocomplete('instance')._renderItem = function (ul, item) {
+                return $('<li>')
+                    .append('<div>' + item.highlighted + '</div>')
                     .appendTo(ul);
             };
         });
