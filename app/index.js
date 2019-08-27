@@ -7,6 +7,8 @@ const path = require('path');
 var app = express();
 // Define the elasticSearch client
 const client = new Client({ node: 'http://localhost:9200' });
+// Define de index name
+const elasticSearchIndex = 'my_index';
 
 // Routes
 /**
@@ -27,7 +29,7 @@ app.get('/locations', async function(request,response){
 
     // search for all the locations in the index
     const { body } = await client.search({
-        index: 'location-test',
+        index: elasticSearchIndex,
         // type: '_doc', // uncomment this line if you are using Elasticsearch ≤ 6
         body: {
             query: {
@@ -53,7 +55,7 @@ app.get('/locations-autocomplete', async function(request,response){
     // search for location name's that matches
     // the request term
     const { body } = await client.search({
-        index: 'location-test',
+        index: elasticSearchIndex,
         // type: '_doc', // uncomment this line if you are using Elasticsearch ≤ 6
         body: {
             query: {
@@ -67,6 +69,43 @@ app.get('/locations-autocomplete', async function(request,response){
     });
 
     response.send(body.hits.hits);
+});
+
+/**
+ * Suggest locations by the most likely spell to the
+ * provided term
+ * @param term string
+ * @returns json[]
+ */
+app.get('/location/suggest', async function (request, response) {
+    // search for suggestions for location name in
+    // the request term
+    const { body } = await client.search({
+        index: elasticSearchIndex,
+        // type: '_doc', // uncomment this line if you are using Elasticsearch ≤ 6
+        body: {
+            suggest: {
+                text: request.query.term,
+                simple_phrase: {
+                    phrase: {
+                        field: "loc_name.trigram",
+                        size: 1,
+                        gram_size: 3,
+                        direct_generator: [{
+                            field: "loc_name.trigram",
+                            suggest_mode: "always"
+                        }],
+                        highlight: {
+                            pre_tag: "<em>",
+                            post_tag: "</em>"
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    response.send(body.suggest.simple_phrase[0].options);
 });
 
 // Listen to port: 3000
