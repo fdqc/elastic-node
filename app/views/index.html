@@ -55,7 +55,7 @@
                 source: '/location/suggest',
                 minLength: 2,
                 select: function (event, ui) {
-                    $('#suggestion').val(ui.item._source.loc_name);
+                    $('#suggestion').val(ui.item.text);
                     return false;
                 }
             }).autocomplete('instance')._renderItem = function (ul, item) {
@@ -72,7 +72,6 @@
                 source: '/location/search-and-suggest',
                 minLength: 2,
                 select: function (event, ui) {
-                    console.log(ui.item);
                     if (ui.item._source !== undefined) {
                         $('#searchSuggest').val(ui.item._source.loc_name);
                     } else {
