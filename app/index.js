@@ -89,11 +89,12 @@ app.get('/location/suggest', async function (request, response) {
                 simple_phrase: {
                     phrase: {
                         field: "loc_name.trigram",
-                        size: 1,
+                        size: 5,
                         gram_size: 3,
                         direct_generator: [{
                             field: "loc_name.trigram",
-                            suggest_mode: "always"
+                            prefix_length: 0,
+                            suggest_mode: "missing"
                         }],
                         highlight: {
                             pre_tag: "<em>",
