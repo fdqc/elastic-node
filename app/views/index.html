@@ -21,6 +21,11 @@
         <label for="locations">Suggestion</label>
         <input type="text" id="suggestion" placeholder="try piedra bamca">
     </div>
+    <br>
+    <div>
+        <label for="locations">Search + Suggestions</label>
+        <input type="text" id="searchSuggest" placeholder="try piedra bamca">
+    </div>
     <script>
         $.ajaxSetup({
             headers: { 'Content-Type': 'application/json' }
@@ -57,6 +62,34 @@
                 return $('<li>')
                     .append('<div>' + item.highlighted + '</div>')
                     .appendTo(ul);
+            };
+
+             /**
+           * Autocomplete function for autocomplete plus
+           * suggestions
+           */
+            $('#searchSuggest').autocomplete({
+                source: '/location/search-and-suggest',
+                minLength: 2,
+                select: function (event, ui) {
+                    console.log(ui.item);
+                    if (ui.item._source !== undefined) {
+                        $('#searchSuggest').val(ui.item._source.loc_name);
+                    } else {
+                        $('#searchSuggest').val(ui.item.text);
+                    }
+                    return false;
+                }
+            }).autocomplete('instance')._renderItem = function (ul, item) {
+                if (item._source !== undefined) {
+                    return $('<li>')
+                        .append('<div>' + item._source.loc_name + '<br>' + item._source.loc_postal_code + '</div>')
+                        .appendTo(ul);
+                } else {
+                    return $('<li>')
+                        .append('<div>' + item.highlighted + '</div>')
+                        .appendTo(ul);
+                }
             };
         });
     </script>
