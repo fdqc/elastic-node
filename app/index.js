@@ -59,8 +59,10 @@ app.get('/locations-autocomplete', async function(request,response){
         // type: '_doc', // uncomment this line if you are using Elasticsearch ≤ 6
         body: {
             query: {
-                match: {
-                    "loc_name": request.query.term
+                wildcard: {
+                    loc_name: {
+                        value: request.query.term + '*'
+                    }
                 }
             },
             _source: ["id", "type", "message", "loc_postal_code", "loc_name", "province_name"],
