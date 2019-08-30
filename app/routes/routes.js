@@ -90,6 +90,22 @@ router.get('/location/suggest', async function (request, response) {
                         highlight: {
                             pre_tag: "<em>",
                             post_tag: "</em>"
+                        },
+                        collate: {
+                            query: {
+                                source: {
+                                    match: {
+                                        "{{field_name}}": "{{suggestion}}"
+                                    }
+                                }
+                            },
+                            params: { "field_name": "loc_name" },
+                            prune: true
+                        },
+                        smoothing: {
+                            laplace: {
+                                alpha: 0.7
+                            }
                         }
                     }
                 }
@@ -135,6 +151,22 @@ router.get('/location/search-and-suggest', async function (request, response) {
                         highlight: {
                             pre_tag: "<em>",
                             post_tag: "</em>"
+                        },
+                        collate: {
+                            query: {
+                                source: {
+                                    match: {
+                                        "{{field_name}}": "{{suggestion}}"
+                                    }
+                                }
+                            },
+                            params: { "field_name": "loc_name" },
+                            prune: true
+                        },
+                        smoothing: {
+                            laplace: {
+                                alpha: 0.7
+                            }
                         }
                     }
                 }
